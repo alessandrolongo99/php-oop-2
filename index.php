@@ -6,17 +6,18 @@ BONUS:
 Alcuni prodotti (es. antipulci) avranno la caratteristica che saranno disponibili solo in un periodo particolare (es. da maggio ad agosto). -->
 
 <?php
-    require_once(__DIR__.'./traits/traits.php');
     class User{
         protected $user_name;
         protected $user_surname;
         protected $user_email;
+        protected $user_credit_card;
 
-        function __construct($_name, $_surname, $_email)
+        function __construct($_name, $_surname, $_email, $_credit_card)
         {
             $this->user_name = $_name;
             $this->user_surname = $_surname;
             $this->user_email = $_email;
+            $this->user_credit_card = $_credit_card;
         }
 
         public function getUserName(){
@@ -30,27 +31,39 @@ Alcuni prodotti (es. antipulci) avranno la caratteristica che saranno disponibil
         public function getUserEmail(){
             return $this->user_email;
         }
+
+        public function getUserCreditCard(){
+            return $this->user_credit_card;
+        }
     };
 
+    // SUBCLASSES USER
     class RegisteredUser extends User{
-        public function getDiscount(){
-            return 'sconoto utente registrato';
+        function __construct($_name, $_surname, $_email, $_credit_card)
+        {
+            parent::__construct($_name, $_surname, $_email, $_credit_card);
+        }
+
+        public function getDiscount($_price){
+            return $_price * 0.8;
         }
     }
+
+    // CLASS PRODUCT
     class Product{
-        protected $product_name;
+        protected $product_brand;
         protected $product_code;
         protected $product_price;
 
-        function __construct($_name, $_code, $_price)
+        function __construct($_brand, $_code, $_price)
         {
-            $this->product_name;
-            $this->product_code;
-            $this->product_price;
+            $this->product_brand = $_brand;
+            $this->product_code = $_code;
+            $this->product_price = $_price;
         }
 
-        public function getProductName(){
-            return $this->product_name;
+        public function getProductBrand(){
+            return $this->product_brand;
         }
 
         public function getProductCode(){
@@ -62,16 +75,25 @@ Alcuni prodotti (es. antipulci) avranno la caratteristica che saranno disponibil
         }
     }
 
+    // SUBCLASSES PRODUCT
+
     class Food extends Product{
         protected $food_type;
+        protected $food_animal;
 
-        function __construct($_name, $_code, $_price)
+        function __construct($_brand, $_code, $_price, $_type, $_animal)
         {
-            parent::__construct($_name, $_code, $_price);
-            $this->food_type;
+            parent::__construct($_brand, $_code, $_price);
+            $this->food_type = $_type;
+            $this->food_animal = $_animal;
         }
     }
 
-    // $paperino = new RegisteredUser('Paperino', 'Paperis', 'paperoamoroso99@gmail.com');
-    // var_dump($paperino);
+    $paperino = new RegisteredUser('Paperino', 'Paperis', 'paperoamoroso99@gmail.com', 'qualcosa');
+    var_dump($paperino);
+
+    $crocchette_cane = new Food('Royal Canin', 1234, 40, 'dry', 'dog');
+    var_dump($crocchette_cane);
+
+    var_dump($paperino->getDiscount($crocchette_cane->getProductPrice()));
 ?>
